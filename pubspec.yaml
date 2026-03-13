@@ -1,0 +1,73 @@
+name: primeerp
+description: "PrimeERP - ERPNext Mobile Client"
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State Management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # Networking
+  dio: ^5.7.0
+  cookie_jar: ^4.0.8
+  dio_cookie_manager: ^3.1.1
+
+  # Routing
+  go_router: ^14.8.1
+
+  # Storage
+  flutter_secure_storage: ^9.2.4
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # Serialization
+  json_annotation: ^4.9.0
+  freezed_annotation: ^2.4.4
+
+  # UI
+  cupertino_icons: ^1.0.8
+  google_fonts: ^6.2.1
+  shimmer: ^3.0.0
+  cached_network_image: ^3.4.1
+  flutter_html: ^3.0.0-beta.2
+  infinite_scroll_pagination: ^4.1.0
+
+  # File handling
+  file_picker: ^10.3.10
+  url_launcher: ^6.3.1
+
+  # PDF / Printing
+  printing: ^5.13.4
+  pdf: ^3.11.2
+
+  # Localization
+  intl: ^0.20.2
+  flutter_svg: ^2.2.4
+  image_picker: ^1.2.1
+  signature: ^6.3.0
+  curved_navigation_bar: ^1.0.6
+  fl_chart: ^1.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.14
+  json_serializable: ^6.9.4
+  freezed: ^2.5.8
+  riverpod_generator: ^2.6.3
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - assets/images/

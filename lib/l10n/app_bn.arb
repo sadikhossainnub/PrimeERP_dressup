@@ -1,0 +1,35 @@
+{
+  "@@locale": "bn",
+  "dashboard": "ড্যাশবোর্ড",
+  "sales": "বিক্রয়",
+  "purchase": "ক্রয়",
+  "inventory": "ইনভেন্টরি",
+  "accounts": "অ্যাকাউন্টস",
+  "hr": "এইচআর ও পে-রোল",
+  "logout": "লগ আউট",
+  "welcome": "স্বাগতম",
+  "welcomeSubtitle": "আজকের আপডেট এখানে দেখুন",
+  "quickLinks": "কুইক লিঙ্ক",
+  "summary": "সারাংশ",
+  "noRecordsFound": "কোন তথ্য পাওয়া যায়নি",
+  "modified": "পরিবর্তিত",
+  "save": "সংরক্ষণ",
+  "cancel": "বাতিল",
+  "username": "ব্যবহারকারীর নাম",
+  "password": "পাসওয়ার্ড",
+  "login": "লগইন",
+  "serverConfig": "সার্ভার কনফিগারেশন",
+  "totalSales": "মোট বিক্রয়",
+  "openLeads": "নতুন লিড",
+  "comments": "মন্তব্য ও কার্যক্রম",
+  "addComment": "একটি মন্তব্য লিখুন...",
+  "noActivity": "এখনো কোন কার্যক্রম নেই।",
+  "newDoc": "নতুন {doctype}",
+  "@newDoc": {
+    "placeholders": {
+      "doctype": {
+        "type": "String"
+      }
+    }
+  }
+}

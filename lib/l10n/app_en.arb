@@ -1,0 +1,35 @@
+{
+  "@@locale": "en",
+  "dashboard": "Dashboard",
+  "sales": "Sales",
+  "purchase": "Purchase",
+  "inventory": "Inventory",
+  "accounts": "Accounts",
+  "hr": "HR & Payroll",
+  "logout": "Logout",
+  "welcome": "Welcome back",
+  "welcomeSubtitle": "Here is what's happening today",
+  "quickLinks": "Quick Links",
+  "summary": "Summary",
+  "noRecordsFound": "No records found",
+  "modified": "Modified",
+  "save": "Save",
+  "cancel": "Cancel",
+  "username": "Username",
+  "password": "Password",
+  "login": "Login",
+  "serverConfig": "Server Configuration",
+  "totalSales": "Total Sales",
+  "openLeads": "Open Leads",
+  "comments": "Comments & Activity",
+  "addComment": "Add a comment...",
+  "noActivity": "No activity yet.",
+  "newDoc": "New {doctype}",
+  "@newDoc": {
+    "placeholders": {
+      "doctype": {
+        "type": "String"
+      }
+    }
+  }
+}
