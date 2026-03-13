@@ -10,6 +10,7 @@ import '../../features/auth/presentation/providers/auth_provider.dart';
 
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
+import '../../features/notifications/presentation/screens/notification_screen.dart';
 
 import '../widgets/custom_navigation_wrapper.dart';
 
@@ -67,8 +68,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/notifications',
-            builder: (context, state) =>
-                const Center(child: Text('Notifications')),
+            builder: (context, state) => const NotificationScreen(),
           ),
           GoRoute(
             path: '/more',

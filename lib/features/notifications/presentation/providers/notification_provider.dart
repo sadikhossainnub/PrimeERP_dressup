@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../frappe_core/data/providers/frappe_provider.dart';
-import '../models/notification_model.dart';
+import '../../data/models/notification_model.dart';
 
 final notificationsProvider = FutureProvider<List<NotificationItem>>((ref) async {
   final repository = ref.watch(frappeRepositoryProvider);
