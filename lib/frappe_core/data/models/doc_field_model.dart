@@ -13,6 +13,8 @@ class DocFieldModel {
   final String? description;
   final String defaultValue;
   final int permlevel;
+  final String? dependsOn;
+  final String? mandatoryDependsOn;
 
   const DocFieldModel({
     required this.fieldname,
@@ -29,6 +31,8 @@ class DocFieldModel {
     this.description,
     this.defaultValue = '',
     this.permlevel = 0,
+    this.dependsOn,
+    this.mandatoryDependsOn,
   });
 
   factory DocFieldModel.fromJson(Map<String, dynamic> json) {
@@ -47,6 +51,8 @@ class DocFieldModel {
       description: json['description'] as String?,
       defaultValue: json['default']?.toString() ?? '',
       permlevel: json['permlevel'] as int? ?? 0,
+      dependsOn: json['depends_on'] as String?,
+      mandatoryDependsOn: json['mandatory_depends_on'] as String?,
     );
   }
 
@@ -66,6 +72,8 @@ class DocFieldModel {
       'description': description,
       'default': defaultValue,
       'permlevel': permlevel,
+      'depends_on': dependsOn,
+      'mandatory_depends_on': mandatoryDependsOn,
     };
   }
 }

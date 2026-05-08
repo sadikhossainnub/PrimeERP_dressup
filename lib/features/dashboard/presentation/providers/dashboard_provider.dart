@@ -276,3 +276,46 @@ final dashboardInventoryStatusProvider = FutureProvider<List<InventoryStatus>>((
     ];
   }
 });
+
+// Need Attention Providers
+
+final dashboardPendingLeavesProvider = FutureProvider<int>((ref) async {
+  final repository = ref.watch(frappeRepositoryProvider);
+  try {
+    return await repository.getCount(
+      'Leave Application',
+      filters: [['status', '=', 'Open']],
+    );
+  } catch (e) {
+    return 0;
+  }
+});
+
+final dashboardPendingStockEntriesProvider = FutureProvider<int>((ref) async {
+  final repository = ref.watch(frappeRepositoryProvider);
+  try {
+    return await repository.getCount(
+      'Stock Entry',
+      filters: [['docstatus', '=', 0]], // 0 is Draft
+    );
+  } catch (e) {
+    return 0;
+  }
+});
+
+final dashboardOverdueInvoicesProvider = FutureProvider<int>((ref) async {
+  final repository = ref.watch(frappeRepositoryProvider);
+  final today = DateTime.now().toIso8601String().split('T')[0];
+  try {
+    return await repository.getCount(
+      'Sales Invoice',
+      filters: [
+        ['docstatus', '=', 1],
+        ['outstanding_amount', '>', 0],
+        ['due_date', '<', today],
+      ],
+    );
+  } catch (e) {
+    return 0;
+  }
+});

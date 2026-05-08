@@ -1,3 +1,4 @@
+import 'dart:io';
 import '../../data/models/doctype_meta_model.dart';
 import '../../data/models/workflow_model.dart';
 import '../../data/models/comment_model.dart';
@@ -20,6 +21,8 @@ abstract class FrappeRepository {
     List<String>? expand,
   });
   Future<Map<String, dynamic>> saveDoc(Map<String, dynamic> doc);
+  Future<Map<String, dynamic>> submitDoc(String doctype, String name, Map<String, dynamic> doc);
+  Future<Map<String, dynamic>> cancelDoc(String doctype, String name);
   Future<void> deleteDoc(String doctype, String name);
 
   Future<DocTypeMetaModel> getDocTypeMeta(String doctype);
@@ -31,6 +34,7 @@ abstract class FrappeRepository {
     String doctype,
     String name,
     String action,
+    Map<String, dynamic> doc,
   );
 
   Future<List<CommentModel>> getComments(String doctype, String name);
@@ -45,4 +49,13 @@ abstract class FrappeRepository {
   });
 
   Future<int> getCount(String doctype, {List<dynamic>? filters});
+
+  Future<Map<String, dynamic>> uploadFile({
+    required File file,
+    required String doctype,
+    required String name,
+    bool isPrivate = true,
+  });
+
+  Future<List<Map<String, dynamic>>> searchLink(String doctype, String txt, {int pageLength = 50});
 }

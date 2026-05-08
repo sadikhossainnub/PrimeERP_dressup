@@ -20,10 +20,12 @@ const List<ModuleItem> appModules = [
   ModuleItem(
     label: 'Sales',
     icon: Icons.shopping_cart_outlined,
+    route: '/sales',
     subItems: [
-      ModuleItem(label: 'Sales Order', icon: Icons.description_outlined, doctype: 'Sales Order'),
-      ModuleItem(label: 'Sales Invoice', icon: Icons.receipt_long_outlined, doctype: 'Sales Invoice'),
-      ModuleItem(label: 'Customer', icon: Icons.person_outline, doctype: 'Customer'),
+      ModuleItem(label: 'Sales Dashboard', icon: Icons.dashboard_outlined, route: '/sales'),
+      ModuleItem(label: 'Sales Order', icon: Icons.description_outlined, doctype: 'Sales Order', route: '/sales/orders'),
+      ModuleItem(label: 'Sales Invoice', icon: Icons.receipt_long_outlined, doctype: 'Sales Invoice', route: '/sales/invoices'),
+      ModuleItem(label: 'Customer', icon: Icons.person_outline, doctype: 'Customer', route: '/sales/customers'),
       ModuleItem(label: 'Lead', icon: Icons.filter_list_alt, doctype: 'Lead'),
       ModuleItem(label: 'Quotation', icon: Icons.request_quote_outlined, doctype: 'Quotation'),
     ],
@@ -31,19 +33,25 @@ const List<ModuleItem> appModules = [
   ModuleItem(
     label: 'Purchase',
     icon: Icons.shopping_bag_outlined,
+    route: '/purchase',
     subItems: [
-      ModuleItem(label: 'Purchase Order', icon: Icons.description_outlined, doctype: 'Purchase Order'),
-      ModuleItem(label: 'Purchase Invoice', icon: Icons.receipt_outlined, doctype: 'Purchase Invoice'),
-      ModuleItem(label: 'Supplier', icon: Icons.local_shipping_outlined, doctype: 'Supplier'),
+      ModuleItem(label: 'Purchase Dashboard', icon: Icons.dashboard_outlined, route: '/purchase'),
+      ModuleItem(label: 'Purchase Order', icon: Icons.description_outlined, doctype: 'Purchase Order', route: '/purchase/orders'),
+      ModuleItem(label: 'Purchase Invoice', icon: Icons.receipt_outlined, doctype: 'Purchase Invoice', route: '/purchase/invoices'),
+      ModuleItem(label: 'Supplier', icon: Icons.local_shipping_outlined, doctype: 'Supplier', route: '/purchase/suppliers'),
+      ModuleItem(label: 'Purchase Receipt', icon: Icons.move_to_inbox_outlined, doctype: 'Purchase Receipt'),
+      ModuleItem(label: 'Material Request', icon: Icons.assignment_outlined, doctype: 'Material Request'),
     ],
   ),
   ModuleItem(
     label: 'Inventory',
     icon: Icons.inventory_2_outlined,
+    route: '/inventory',
     subItems: [
-      ModuleItem(label: 'Item', icon: Icons.category_outlined, doctype: 'Item'),
-      ModuleItem(label: 'Stock Entry', icon: Icons.move_to_inbox_outlined, doctype: 'Stock Entry'),
-      ModuleItem(label: 'Warehouse', icon: Icons.warehouse_outlined, doctype: 'Warehouse'),
+      ModuleItem(label: 'Inventory Dashboard', icon: Icons.dashboard_outlined, route: '/inventory'),
+      ModuleItem(label: 'Item', icon: Icons.category_outlined, doctype: 'Item', route: '/inventory/items'),
+      ModuleItem(label: 'Stock Entry', icon: Icons.sync_alt_outlined, doctype: 'Stock Entry', route: '/inventory/stock-entries'),
+      ModuleItem(label: 'Warehouse', icon: Icons.warehouse_outlined, doctype: 'Warehouse', route: '/inventory/warehouses'),
     ],
   ),
   ModuleItem(
@@ -58,11 +66,13 @@ const List<ModuleItem> appModules = [
   ModuleItem(
     label: 'HR & Payroll',
     icon: Icons.people_alt_outlined,
+    route: '/hr',
     subItems: [
-      ModuleItem(label: 'Employee', icon: Icons.badge_outlined, doctype: 'Employee'),
-      ModuleItem(label: 'Attendance', icon: Icons.how_to_reg_outlined, doctype: 'Attendance'),
-      ModuleItem(label: 'Leave Application', icon: Icons.event_note_outlined, doctype: 'Leave Application'),
-      ModuleItem(label: 'Salary Slip', icon: Icons.monetization_on_outlined, doctype: 'Salary Slip'),
+      ModuleItem(label: 'HR Dashboard', icon: Icons.dashboard_outlined, route: '/hr'),
+      ModuleItem(label: 'Employee', icon: Icons.badge_outlined, doctype: 'Employee', route: '/hr/employees'),
+      ModuleItem(label: 'Attendance', icon: Icons.how_to_reg_outlined, doctype: 'Attendance', route: '/hr/attendance'),
+      ModuleItem(label: 'Leave Application', icon: Icons.event_note_outlined, doctype: 'Leave Application', route: '/hr/leaves'),
+      ModuleItem(label: 'Salary Slip', icon: Icons.monetization_on_outlined, doctype: 'Salary Slip', route: '/hr/salary-slips'),
     ],
   ),
   ModuleItem(

@@ -100,6 +100,30 @@ class FrappeRemoteDataSource {
     }
   }
 
+  Future<Map<String, dynamic>> submitDoc(String doctype, String name, Map<String, dynamic> doc) async {
+    try {
+      final response = await _dio.post(
+        ApiConstants.submit,
+        data: {'doc': jsonEncode(doc)},
+      );
+      return response.data['message'] ?? response.data['docs']?[0] ?? {};
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  Future<Map<String, dynamic>> cancelDoc(String doctype, String name) async {
+    try {
+      final response = await _dio.post(
+        ApiConstants.cancel,
+        data: {'doctype': doctype, 'name': name},
+      );
+      return response.data['message'] ?? {};
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
   // ─── DocType Metadata ───
 
   Future<Map<String, dynamic>> getDocTypeMeta(String doctype) async {
@@ -119,7 +143,7 @@ class FrappeRemoteDataSource {
     try {
       final response = await _dio.post(
         ApiConstants.getTransitions,
-        data: {'doc': doc},
+        data: {'doc': jsonEncode(doc)},
       );
       return List<Map<String, dynamic>>.from(response.data['message'] ?? []);
     } on DioException catch (e) {
@@ -131,17 +155,17 @@ class FrappeRemoteDataSource {
     String doctype,
     String name,
     String action,
+    Map<String, dynamic> doc,
   ) async {
     try {
       final response = await _dio.post(
         ApiConstants.applyWorkflow,
         data: {
-          'doctype': doctype,
-          'docname': name,
+          'doc': jsonEncode(doc),
           'action': action,
         },
       );
-      return response.data['doc'];
+      return response.data['message'] ?? response.data['doc'];
     } on DioException catch (e) {
       throw _handleDioError(e);
     }
@@ -170,6 +194,35 @@ class FrappeRemoteDataSource {
   }
 
   // ─── Generic Method Calls ───
+
+  Future<List<Map<String, dynamic>>> searchLink(String doctype, String txt, {int pageLength = 50}) async {
+    try {
+      final response = await _dio.get(
+        ApiConstants.searchLink,
+        queryParameters: {
+          'doctype': doctype,
+          'txt': txt,
+          'page_length': pageLength,
+        },
+      );
+      
+      // frappe.client.search_link typically returns a list of values or a list of dicts.
+      final message = response.data['message'];
+      if (message is List) {
+        if (message.isNotEmpty && message.first is Map) {
+          return List<Map<String, dynamic>>.from(message);
+        } else if (message.isNotEmpty && message.first is String) {
+          return message.map((e) => {'name': e, 'value': e}).toList();
+        } else if (message.isNotEmpty && message.first is List) {
+           return message.map((e) => {'name': e[0], 'description': e.length > 1 ? e[1] : ''}).toList();
+        }
+        return [];
+      }
+      return [];
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
 
   Future<dynamic> callMethod(
     String methodPath, {

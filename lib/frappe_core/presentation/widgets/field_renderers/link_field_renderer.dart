@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'field_renderer.dart';
@@ -83,43 +84,108 @@ class _LinkFieldWidgetState extends ConsumerState<LinkFieldWidget> {
   }
 }
 
-class _LinkSearchDialog extends ConsumerWidget {
+class _LinkSearchDialog extends ConsumerStatefulWidget {
   final String doctype;
   final ValueChanged<String> onSelect;
 
   const _LinkSearchDialog({required this.doctype, required this.onSelect});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final ds = ref.watch(frappeRemoteDsProvider);
-    
+  ConsumerState<_LinkSearchDialog> createState() => _LinkSearchDialogState();
+}
+
+class _LinkSearchDialogState extends ConsumerState<_LinkSearchDialog> {
+  String _searchQuery = '';
+  List<Map<String, dynamic>> _items = [];
+  bool _isLoading = true;
+  String? _error;
+  Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchItems();
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _fetchItems() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+    try {
+      final ds = ref.read(frappeRemoteDsProvider);
+      final items = await ds.searchLink(widget.doctype, _searchQuery);
+      if (mounted) {
+        setState(() {
+          _items = items;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = e.toString();
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _onSearchChanged(String value) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        setState(() => _searchQuery = value);
+        _fetchItems();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Select $doctype'),
+      title: Text('Select ${widget.doctype}'),
       content: SizedBox(
         width: double.maxFinite,
         height: 400,
-        child: FutureBuilder<List<Map<String, dynamic>>>(
-          future: ds.getList(doctype, limitPageLength: 50),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            }
-            final items = snapshot.data ?? [];
-            return ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                final item = items[index];
-                final name = item['name'] as String;
-                return ListTile(
-                  title: Text(name),
-                  onTap: () => onSelect(name),
-                );
-              },
-            );
-          },
+        child: Column(
+          children: [
+            TextField(
+              decoration: const InputDecoration(
+                hintText: 'Search...',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(),
+                isDense: true,
+              ),
+              onChanged: _onSearchChanged,
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _error != null
+                      ? Center(child: Text('Error: $_error'))
+                      : ListView.builder(
+                          itemCount: _items.length,
+                          itemBuilder: (context, index) {
+                            final item = _items[index];
+                            final name = item['name'] as String? ?? item['value'] as String? ?? '';
+                            final desc = item['description'] as String?;
+                            return ListTile(
+                              title: Text(name),
+                              subtitle: desc != null && desc.isNotEmpty ? Text(desc) : null,
+                              onTap: () => widget.onSelect(name),
+                            );
+                          },
+                        ),
+            ),
+          ],
         ),
       ),
     );

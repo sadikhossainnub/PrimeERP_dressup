@@ -436,10 +436,10 @@ class MoreScreen extends ConsumerWidget {
   }
 
   void _navigate(BuildContext context, ModuleItem item) {
-    if (item.doctype != null) {
-      context.push('/resource/${item.doctype}');
-    } else if (item.route != null) {
+    if (item.route != null) {
       context.push(item.route!);
+    } else if (item.doctype != null) {
+      context.push('/resource/${item.doctype}');
     }
   }
 }

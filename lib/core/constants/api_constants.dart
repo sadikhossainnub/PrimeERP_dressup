@@ -55,4 +55,10 @@ class ApiConstants {
   // ─── Link Options (for Link fields) ───
   static const String getLinkOptions =
       '/api/method/frappe.client.get_list';
+  static const String searchLink = 
+      '/api/method/frappe.client.search_link';
+  static const String submit = 
+      '/api/method/frappe.client.submit';
+  static const String cancel = 
+      '/api/method/frappe.client.cancel';
 }

@@ -1,3 +1,4 @@
+import 'dart:io';
 import '../datasources/frappe_remote_ds.dart';
 import '../../domain/repositories/frappe_repository.dart';
 import '../models/doctype_meta_model.dart';
@@ -14,6 +15,26 @@ class FrappeRepositoryImpl implements FrappeRepository {
   Future<DocTypeMetaModel> getDocTypeMeta(String doctype) async {
     final data = await _remoteDataSource.getDocTypeMeta(doctype);
     return DocTypeMetaModel.fromJson(data);
+  }
+
+  @override
+  Future<Map<String, dynamic>> uploadFile({
+    required File file,
+    required String doctype,
+    required String name,
+    bool isPrivate = true,
+  }) async {
+    return await _remoteDataSource.uploadFile(
+      file: file,
+      doctype: doctype,
+      name: name,
+      isPrivate: isPrivate,
+    );
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> searchLink(String doctype, String txt, {int pageLength = 50}) async {
+    return await _remoteDataSource.searchLink(doctype, txt, pageLength: pageLength);
   }
 
   @override
@@ -59,6 +80,16 @@ class FrappeRepositoryImpl implements FrappeRepository {
   }
 
   @override
+  Future<Map<String, dynamic>> submitDoc(String doctype, String name, Map<String, dynamic> doc) async {
+    return await _remoteDataSource.submitDoc(doctype, name, doc);
+  }
+
+  @override
+  Future<Map<String, dynamic>> cancelDoc(String doctype, String name) async {
+    return await _remoteDataSource.cancelDoc(doctype, name);
+  }
+
+  @override
   Future<List<WorkflowTransitionModel>> getWorkflowTransitions(Map<String, dynamic> doc) async {
     final data = await _remoteDataSource.getWorkflowTransitions(doc);
     return data.map((json) => WorkflowTransitionModel.fromJson(json)).toList();
@@ -69,8 +100,9 @@ class FrappeRepositoryImpl implements FrappeRepository {
     String doctype,
     String name,
     String action,
+    Map<String, dynamic> doc,
   ) {
-    return _remoteDataSource.applyWorkflowAction(doctype, name, action);
+    return _remoteDataSource.applyWorkflowAction(doctype, name, action, doc);
   }
 
   @override

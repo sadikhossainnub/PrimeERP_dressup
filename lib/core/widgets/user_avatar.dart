@@ -29,7 +29,9 @@ class UserAvatar extends StatelessWidget {
     if (baseUrl == null || baseUrl!.isEmpty) return null;
 
     // Fix double slash: if baseUrl ends with / and userImage starts with /
-    final base = baseUrl!.endsWith('/') ? baseUrl!.substring(0, baseUrl!.length - 1) : baseUrl!;
+    final base = baseUrl!.endsWith('/')
+        ? baseUrl!.substring(0, baseUrl!.length - 1)
+        : baseUrl!;
     return '$base$userImage';
   }
 
@@ -73,7 +75,7 @@ class UserAvatar extends StatelessWidget {
         radius: radius,
         backgroundColor: AppTheme.primaryColor.withValues(alpha: 0.1),
         backgroundImage: NetworkImage(url),
-        onBackgroundImageError: (_, __) {},
+        onBackgroundImageError: (_, _) {},
         child: null,
       );
     }
