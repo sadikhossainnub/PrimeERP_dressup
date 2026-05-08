@@ -27,7 +27,9 @@ class FrappeEvaluator {
       return expression.split('&&').every((e) => _evalCondition(e.trim(), doc));
     }
     if (expression.contains(' and ')) {
-      return expression.split(' and ').every((e) => _evalCondition(e.trim(), doc));
+      return expression
+          .split(' and ')
+          .every((e) => _evalCondition(e.trim(), doc));
     }
 
     return _evalCondition(expression, doc);
@@ -35,27 +37,34 @@ class FrappeEvaluator {
 
   static bool _evalCondition(String condition, Map<String, dynamic> doc) {
     condition = condition.trim();
-    
+
     // Check for in_list
-    final inListMatch = RegExp(r"in_list\(([^,]+),\s*\[(.*?)\]\)").firstMatch(condition);
+    final inListMatch = RegExp(
+      r"in_list\(([^,]+),\s*\[(.*?)\]\)",
+    ).firstMatch(condition);
     if (inListMatch != null) {
       final field = inListMatch.group(1)?.trim() ?? '';
       final arrayStr = inListMatch.group(2) ?? '';
-      
+
       final fieldValue = _getFieldValue(field, doc);
       if (fieldValue == null) return false;
 
       // Extract values from array string (e.g. 'A', "B", 'C')
-      final listValues = RegExp(r"['" + '"' + r"](.*?)['" + '"' + r"]")
-          .allMatches(arrayStr)
-          .map((m) => m.group(1))
-          .toList();
+      final listValues = RegExp(
+        r"['"
+                '"' +
+            r"](.*?)['" +
+            '"' +
+            r"]",
+      ).allMatches(arrayStr).map((m) => m.group(1)).toList();
 
       return listValues.contains(fieldValue.toString());
     }
 
     // Simple comparison
-    final opMatch = RegExp(r"(==|!=|>=|<=|>|<|in|not in)").firstMatch(condition);
+    final opMatch = RegExp(
+      r"(==|!=|>=|<=|>|<|in|not in)",
+    ).firstMatch(condition);
     if (opMatch == null) {
       // It might be a simple boolean check e.g. "eval:doc.is_return"
       final val = _getFieldValue(condition, doc);
@@ -104,8 +113,10 @@ class FrappeEvaluator {
   }
 
   static dynamic _resolveValue(String str, Map<String, dynamic> doc) {
-    if (str.startsWith("'") && str.endsWith("'")) return str.substring(1, str.length - 1);
-    if (str.startsWith('"') && str.endsWith('"')) return str.substring(1, str.length - 1);
+    if (str.startsWith("'") && str.endsWith("'"))
+      return str.substring(1, str.length - 1);
+    if (str.startsWith('"') && str.endsWith('"'))
+      return str.substring(1, str.length - 1);
     if (num.tryParse(str) != null) return num.parse(str);
     if (str == 'true' || str == 'True') return true;
     if (str == 'false' || str == 'False') return false;
@@ -120,9 +131,11 @@ class FrappeEvaluator {
   }
 
   static dynamic _getFieldValue(String fieldPath, Map<String, dynamic> doc) {
-    final cleanPath = fieldPath.startsWith('doc.') ? fieldPath.substring(4) : fieldPath;
+    final cleanPath = fieldPath.startsWith('doc.')
+        ? fieldPath.substring(4)
+        : fieldPath;
     final parts = cleanPath.split('.');
-    
+
     dynamic current = doc;
     for (final part in parts) {
       if (current is Map && current.containsKey(part)) {
