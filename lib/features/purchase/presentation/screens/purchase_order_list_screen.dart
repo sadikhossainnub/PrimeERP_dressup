@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../../../../frappe_core/data/providers/frappe_provider.dart';
-import '../../../../frappe_core/presentation/providers/permission_provider.dart';
+import '../../../../frappe_core/presentation/widgets/permission_gate.dart';
 import '../widgets/purchase_status_badge.dart';
 
 class PurchaseOrderListScreen extends ConsumerStatefulWidget {
@@ -174,22 +174,15 @@ class _PurchaseOrderListScreenState
           ),
         ),
       ),
-      floatingActionButton: ref
-          .watch(userPermissionsProvider('Purchase Order'))
-          .maybeWhen(
-            data: (perms) {
-              if (perms.canCreate == true) {
-                return FloatingActionButton(
-                  onPressed: () =>
-                      context.push('/resource/Purchase Order/new'),
-                  backgroundColor: const Color(0xFF3B82F6),
-                  child: const Icon(Icons.add, color: Colors.white),
-                );
-              }
-              return null;
-            },
-            orElse: () => null,
-          ),
+      floatingActionButton: PermissionGate(
+        doctype: 'Purchase Order',
+        action: 'create',
+        child: FloatingActionButton(
+          onPressed: () => context.push('/resource/Purchase Order/new'),
+          backgroundColor: const Color(0xFF3B82F6),
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
+      ),
       body: PagedListView<int, Map<String, dynamic>>(
         pagingController: _pagingController,
         padding: const EdgeInsets.all(16),

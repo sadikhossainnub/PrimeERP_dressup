@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/providers/frappe_provider.dart';
 import '../providers/frappe_doc_provider.dart';
+import '../providers/permission_provider.dart';
 
 class WorkflowActionsBar extends ConsumerStatefulWidget {
   final String doctype;
@@ -71,10 +72,49 @@ class _WorkflowActionsBarState extends ConsumerState<WorkflowActionsBar> {
   }
 
   Widget _buildActionButton(String action) {
+    // Determine the permission action based on workflow action
+    String? permAction;
+    final lowerAction = action.toLowerCase();
+    if (lowerAction.contains('submit')) {
+      permAction = 'submit';
+    } else if (lowerAction.contains('cancel')) {
+      permAction = 'cancel';
+    } else if (lowerAction.contains('amend')) {
+      permAction = 'amend';
+    } else if (lowerAction.contains('approve') || lowerAction.contains('accept')) {
+      permAction = 'write'; // General write permission for approve actions
+    }
+
+    // Check if user has permission for this action
+    if (permAction != null) {
+      final permission = ref.watch(userPermissionsProvider(widget.doctype));
+      
+      final hasPermission = permission.maybeWhen(
+        data: (perms) {
+          switch (permAction) {
+            case 'submit':
+              return perms.canSubmit;
+            case 'cancel':
+              return perms.canCancel;
+            case 'amend':
+              return perms.canAmend;
+            case 'write':
+              return perms.canWrite;
+            default:
+              return false;
+          }
+        },
+        orElse: () => false,
+      );
+      
+      if (!hasPermission) {
+        return const SizedBox.shrink();
+      }
+    }
+
     Color btnColor;
     
     // Assign colors based on typical workflow keywords
-    final lowerAction = action.toLowerCase();
     if (lowerAction.contains('approve') || lowerAction.contains('submit') || lowerAction.contains('accept')) {
       btnColor = const Color(0xFF10B981); // Green
     } else if (lowerAction.contains('reject') || lowerAction.contains('cancel') || lowerAction.contains('deny')) {

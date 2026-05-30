@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../../../../frappe_core/data/providers/frappe_provider.dart';
-import '../../../../frappe_core/presentation/providers/permission_provider.dart';
+import '../../../../frappe_core/presentation/widgets/permission_gate.dart';
 import '../widgets/sales_status_badge.dart';
 
 class SalesOrderListScreen extends ConsumerStatefulWidget {
@@ -107,9 +107,14 @@ class _SalesOrderListScreenState extends ConsumerState<SalesOrderListScreen> {
           ]),
         ),
       ),
-      floatingActionButton: ref.watch(userPermissionsProvider('Sales Order')).maybeWhen(
-        data: (p) => p.canCreate == true ? FloatingActionButton(onPressed: () => context.push('/resource/Sales Order/new'), backgroundColor: const Color(0xFF10B981), child: const Icon(Icons.add, color: Colors.white)) : null,
-        orElse: () => null,
+      floatingActionButton: PermissionGate(
+        doctype: 'Sales Order',
+        action: 'create',
+        child: FloatingActionButton(
+          onPressed: () => context.push('/resource/Sales Order/new'),
+          backgroundColor: const Color(0xFF10B981),
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
       ),
       body: PagedListView<int, Map<String, dynamic>>(
         pagingController: _pagingController,

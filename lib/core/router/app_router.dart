@@ -7,10 +7,13 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../frappe_core/presentation/screens/generic_list_screen.dart';
 import '../../frappe_core/presentation/screens/generic_form_screen.dart';
 import '../../features/auth/presentation/providers/auth_provider.dart';
+import '../../frappe_core/presentation/providers/permission_provider.dart';
+import '../../frappe_core/presentation/providers/user_role_provider.dart';
 
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../features/notifications/presentation/screens/notification_screen.dart';
+import '../../core/screens/unauthorized_screen.dart';
 
 // Purchase Module screens
 import '../../features/purchase/presentation/screens/purchase_dashboard_screen.dart';
@@ -47,9 +50,25 @@ import '../../features/hr/presentation/screens/leave_application_list_screen.dar
 import '../../features/hr/presentation/screens/salary_slip_list_screen.dart';
 
 import '../widgets/custom_navigation_wrapper.dart';
+import '../constants/module_constants.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
+
+  // Build route-to-doctype mapping from appModules
+  final Map<String, String?> routeToDoctype = {};
+  for (final module in appModules) {
+    if (module.route != null && module.doctype != null) {
+      routeToDoctype[module.route!] = module.doctype;
+    }
+    if (module.subItems != null) {
+      for (final sub in module.subItems!) {
+        if (sub.route != null && sub.doctype != null) {
+          routeToDoctype[sub.route!] = sub.doctype;
+        }
+      }
+    }
+  }
 
   return GoRouter(
     initialLocation: '/',
@@ -60,10 +79,40 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       if (!isLoggedIn && !isLoggingIn) return '/login';
       if (isLoggedIn && isLoggingIn) return '/';
+
+      // Permission check for authenticated users
+      if (isLoggedIn) {
+        final currentPath = state.matchedLocation;
+        
+        // Skip permission check for non-module routes
+        if (currentPath == '/' ||
+            currentPath.startsWith('/resource/') ||
+            currentPath.startsWith('/settings') ||
+            currentPath.startsWith('/profile') ||
+            currentPath.startsWith('/notifications') ||
+            currentPath.startsWith('/more') ||
+            currentPath.startsWith('/unauthorized')) {
+          return null;
+        }
+
+        // Check if this route has an associated doctype
+        final doctype = routeToDoctype[currentPath];
+        if (doctype != null) {
+          final permission = ref.read(userPermissionsProvider(doctype));
+          
+          permission.whenData((perms) {
+            if (!perms.canRead) {
+              context.push('/unauthorized');
+            }
+          });
+        }
+      }
+
       return null;
     },
     routes: [
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      GoRoute(path: '/unauthorized', builder: (context, state) => const UnauthorizedScreen()),
       ShellRoute(
         builder: (context, state, child) => CustomNavigationWrapper(
           currentPath: state.matchedLocation,

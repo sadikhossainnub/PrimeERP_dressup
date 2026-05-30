@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../../../../frappe_core/data/providers/frappe_provider.dart';
-import '../../../../frappe_core/presentation/providers/permission_provider.dart';
+import '../../../../frappe_core/presentation/widgets/permission_gate.dart';
 
 class StockEntryListScreen extends ConsumerStatefulWidget {
   const StockEntryListScreen({super.key});
@@ -89,9 +89,14 @@ class _StockEntryListScreenState extends ConsumerState<StockEntryListScreen> {
           ),
         ),
       ),
-      floatingActionButton: ref.watch(userPermissionsProvider('Stock Entry')).maybeWhen(
-        data: (p) => p.canCreate == true ? FloatingActionButton(onPressed: () => context.push('/resource/Stock Entry/new'), backgroundColor: const Color(0xFF10B981), child: const Icon(Icons.add, color: Colors.white)) : null,
-        orElse: () => null,
+      floatingActionButton: PermissionGate(
+        doctype: 'Stock Entry',
+        action: 'create',
+        child: FloatingActionButton(
+          onPressed: () => context.push('/resource/Stock Entry/new'),
+          backgroundColor: const Color(0xFF10B981),
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
       ),
       body: PagedListView<int, Map<String, dynamic>>(
         pagingController: _pagingController,
